@@ -6,6 +6,7 @@ Collections
 Logs
 SourceControl
 /Saved/AutoScreenshot.png
-/Binaries
 .vs
 /*.vsconfig
+CrashReportClient
+/Saved/Config/WindowsEditor/EditorPerProjectUserSettings.ini
