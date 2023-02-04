@@ -20,7 +20,7 @@ public:
 	static void RegisterWindable(UObject* windable);
 	static void UnregisterWindable(UObject* windable);
 
-	static void SimplePhysicsWind(UObject* windable, const FVector& windForce);
+	static void SimplePhysicsWind(UObject* windable, const FVector& windForce, float clampForce);
 };
 
 class GGJ_API IWindable
@@ -28,9 +28,9 @@ class GGJ_API IWindable
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, meta = (DisplayName = "Wind"))
-	void BP_Wind(const FVector& windForce);
-	virtual void BP_Wind_Implementation(const FVector& windForce)
+	UFUNCTION(BlueprintNativeEvent)
+	void Wind(const FVector& windForce);
+	virtual void Wind_Implementation(const FVector& windForce)
 	{
 		// Maybe implemented
 	}

@@ -20,8 +20,38 @@ void UWindable::UnregisterWindable(UObject* windable)
 	}
 }
 
-void UWindable::SimplePhysicsWind(UObject* windable, const FVector& windForce)
+void UWindable::SimplePhysicsWind(UObject* windable, const FVector& windForce, float clampForce)
 {
+	FVector force = windForce;
+	
+	if(clampForce > 0.0f)
+	{
+		force = force.GetClampedToMaxSize(clampForce);
+	}
 
+	if (UPrimitiveComponent* primComp = Cast<UPrimitiveComponent>(windable))
+	{
+		if (primComp->IsSimulatingPhysics())
+		{
+			primComp->AddImpulse(force);
+		}
+	}
+
+	if(AActor* actor = Cast<AActor>(windable))
+	{
+		TArray<UPrimitiveComponent*> primitiveComponents;
+		actor->GetComponents(primitiveComponents);
+
+		for(UPrimitiveComponent* primComp : primitiveComponents)
+		{
+			if (primComp != nullptr)
+			{
+				if (primComp->IsSimulatingPhysics())
+				{
+					primComp->AddImpulse(force);
+				}
+			}
+		}
+	}
 }
 

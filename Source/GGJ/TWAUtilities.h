@@ -76,8 +76,69 @@ FORCEINLINE float LerpClamped(float alpha, float minVal, float maxVal)
 
 //////////////////////////////////////////////////////////////////////////
 
+#define COS_0 1.0
+#define COS_1 0.9998476952
+#define COS_2 0.999390827
+#define COS_3 0.9986295348
+#define COS_5 0.9961946981
+#define COS_10 0.984807753
+#define COS_15 0.9659258263
+#define COS_20 0.9396926208
+#define COS_25 0.9063077870
+#define COS_30 0.8660254038
+#define COS_35 0.8191520443
+#define COS_40 0.7660444431
+#define COS_45 0.7071067812
+#define COS_50 0.6427876097
+#define COS_55 0.5735764363
+#define COS_60 0.5
+#define COS_70 0.3420201433
+#define COS_80 0.1736481777
+#define COS_90 0
+#define COS_100 -0.1736481777
+#define COS_110 -0.3420201433
+#define COS_120 -0.5
+#define COS_130 -0.6427876097
+#define COS_140 -0.7660444431
+#define COS_150 -0.8660254038
+#define COS_160 -0.9396926208
+#define COS_170 -0.984807753
+#define COS_180 -1
+
+//////////////////////////////////////////////////////////////////////////
+
 struct GGJ_API Utils
 {
+	//
+	// Math Functions
+	//
+
+
+	template<class T> FORCEINLINE static T Approach(const T& current, const T& target, float coeff, float deltaTime)
+	{
+		return target + (current - target) * FMath::Pow((1.0f - coeff), deltaTime);
+	}
+
+	FORCEINLINE static float NormalizeRotAngle(float angle)
+	{
+		angle = FMath::Fmod(angle, 360.0f);
+
+		if (angle <= -180.0f)
+		{
+			angle += 360.0f;
+		}
+		else if (angle >= 180.0f)
+		{
+			angle -= 360.0f;
+		}
+		checkSlow(angle >= -180.0f && angle <= 180.0f);
+		return angle;
+	}
+
+	FORCEINLINE static float ApproachAngle(const float current, float target, float coeff, float deltaTime) // Degrees
+	{
+		return Utils::NormalizeRotAngle(target + Utils::NormalizeRotAngle(current - target) * FMath::Pow((1.0f - coeff), deltaTime));
+	}
 
 	//
 	// Global Objects Accessors
