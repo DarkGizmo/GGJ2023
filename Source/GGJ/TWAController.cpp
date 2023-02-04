@@ -103,7 +103,7 @@ void ATWAController::BoostWindPressed()
 
 void ATWAController::BoostWindReleased()
 {
-	if (BoostCurveMultiplier != nullptr)
+	if (bWindWantsBoost && BoostCurveMultiplier != nullptr)
 	{
 		bWindWantsBoost = false;
 		float windBoostElapsedTime = FMath::Max(Utils::ElapsedTime(WindBoostStartedTime), MinimumReboostInterval);

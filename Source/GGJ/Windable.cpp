@@ -1,14 +1,26 @@
 
 #include "Windable.h"
 
+#include "EngineUtils.h"
+
 #include "TWAUtilities.h"
 #include "TWAGameModeBase.h"
+#include "CameraLimitVolume.h"
 
 void UWindable::RegisterWindable(UObject* windable)
 {
 	if (ATWAGameModeBase* gameMode = Utils::GetGameMode())
 	{
 		gameMode->WindableList.Add(windable);
+
+		for (TActorIterator<ACameraLimitVolume> cameraLimitVolume(windable->GetWorld()); cameraLimitVolume; ++cameraLimitVolume)
+		{
+			if ((*cameraLimitVolume) != nullptr)
+			{
+				(*cameraLimitVolume)->TriggerOverlapEvents();
+			}
+		}
+		
 	}
 }
 
