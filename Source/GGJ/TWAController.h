@@ -61,6 +61,12 @@ public:
 	UFUNCTION()
 	void BoostWindReleased();
 
+	UFUNCTION(BlueprintCallable)
+	FBox GetWindClutterLimits() const;
+
+	UFUNCTION(BlueprintCallable)
+	void SnapClutterToGround();
+
 	FVector2D WindInput2D;
 	bool bWindWantsBoost;
 	float WindBoostStartedTime;

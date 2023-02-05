@@ -78,6 +78,11 @@ void ATWAPawn::Tick(float deltaTime)
 									IResetable::Execute_Reset(object);
 								}
 							}
+
+							if (ATWAController* controller = Cast<ATWAController>(GetController()))
+							{
+								controller->SnapClutterToGround();
+							}
 						}
 					}
 				}
@@ -112,6 +117,11 @@ void ATWAPawn::StartGame()
 		RecomputeViewTargets();
 	}
 	SetActorLocation(GetTargetViewLocation(), false);
+
+	if (ATWAController* controller = Cast<ATWAController>(GetController()))
+	{
+		controller->SnapClutterToGround();
+	}
 }
 
 FVector ATWAPawn::GetTargetViewLocation() const
