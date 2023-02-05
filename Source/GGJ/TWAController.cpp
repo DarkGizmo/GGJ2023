@@ -37,6 +37,7 @@ void ATWAController::Tick(float deltaTime)
 		{
 			bWindWantsBoost = false;
 			WindBoostBurnedOutDuration = BoostRegenDuration;
+			OnBoostEnded.Broadcast();
 		}
 
 		float windBoostRatio = BoostCurveMultiplier && bWindWantsBoost ? BoostCurveMultiplier->GetFloatValue(windBoostElapsedTime) : 1.0f;
