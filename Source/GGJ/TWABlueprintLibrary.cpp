@@ -3,6 +3,7 @@
 #include "TWAController.h"
 #include "TWAUtilities.h"
 #include "Windable.h"
+#include "Flammable.h"
 
 class ATWAPawn* UTWABlueprintLibrary::GetLocalPawn()
 {
@@ -51,4 +52,9 @@ void UTWABlueprintLibrary::UnregisterWindable(UObject* self)
 void UTWABlueprintLibrary::SimplePhysicsWind(UObject* selfObject, const FVector& windForce, float clampForce)
 {
 	UWindable::SimplePhysicsWind(selfObject, windForce, clampForce);
+}
+
+bool UTWABlueprintLibrary::DefaultIsFlaming(UObject* selfObject)
+{
+	return UFlammable::DefaultIsFlaming(selfObject);
 }

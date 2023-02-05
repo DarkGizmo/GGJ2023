@@ -11,6 +11,10 @@ UINTERFACE(BlueprintType)
 class UFlammable : public UInterface
 {
 	GENERATED_BODY()
+
+public:
+
+	static bool DefaultIsFlaming(UObject* object);
 };
 
 /**
@@ -22,6 +26,10 @@ class GGJ_API IFlammable
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	UFUNCTION(BluePrintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void CatchFire();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool IsFlaming() const;
+	bool IsFlaming_Implementation() const;
 };

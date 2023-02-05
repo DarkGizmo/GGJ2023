@@ -37,7 +37,7 @@ void ATWAController::Tick(float deltaTime)
 		{
 			bWindWantsBoost = false;
 			WindBoostBurnedOutDuration = BoostRegenDuration;
-			OnBoostEnded.Broadcast();
+			OnBoostEnded.Broadcast(windBoostElapsedTime);
 		}
 
 		float windBoostRatio = BoostCurveMultiplier && bWindWantsBoost ? BoostCurveMultiplier->GetFloatValue(windBoostElapsedTime) : 1.0f;
@@ -111,9 +111,7 @@ void ATWAController::BoostWindReleased()
 	if (bWindWantsBoost && BoostCurveMultiplier != nullptr)
 	{
 		bWindWantsBoost = false;
-		float windBoostElapsedTime = FMath::Max(Utils::ElapsedTime(WindBoostStartedTime), MinimumReboostInterval);
-		WindBoostBurnedOutDuration = MapClamped(windBoostElapsedTime, 0.0f, BoostCurveMultiplier->FloatCurve.GetLastKey().Time, 0.0f, BoostRegenDuration);
-		OnBoostEnded.Broadcast();
+		WindBoostBurnedOutDuration = FMath::Max(MapClamped(Utils::ElapsedTime(WindBoostStartedTime), 0.0f, BoostCurveMultiplier->FloatCurve.GetLastKey().Time, 0.0f, BoostRegenDuration), MinimumReboostInterval);
+		OnBoostEnded.Broadcast(MapClamped(Utils::ElapsedTime(WindBoostStartedTime), 0.0f, BoostCurveMultiplier->FloatCurve.GetLastKey().Time, 0.0f, BoostRegenDuration));
 	}
-	
 }

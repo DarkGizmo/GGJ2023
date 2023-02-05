@@ -6,7 +6,7 @@
 #include "TWAController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBoostStarted);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBoostEnded);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBoostEnded, float, usedBoost);
 
 /**
  * 
@@ -32,7 +32,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Boost")
 	class UCurveFloat* BoostCurveMultiplier;
 
-	UPROPERTY(EditAnywhere, Category = "Boost")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Boost")
 	float MinimumReboostInterval = 2.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Boost")
