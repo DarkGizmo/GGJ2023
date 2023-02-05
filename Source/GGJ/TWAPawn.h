@@ -41,7 +41,6 @@ public:
 
 	FVector GetTargetViewLocation() const;
 
-
 	UFUNCTION(BlueprintCallable)
 	void RecomputeViewTargets();
 
