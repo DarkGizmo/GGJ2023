@@ -2,10 +2,12 @@
 
 #include "CameraLimitVolume.h"
 
+#include "EngineUtils.h"
 #include "Components/BrushComponent.h"
 
 #include "TWAUtilities.h"
 #include "TWAPawn.h"
+#include "TWACheckpoint.h"
 
 void ACameraLimitVolume::BeginPlay()
 {
@@ -17,6 +19,21 @@ void ACameraLimitVolume::BeginPlay()
 		brushComp->OnComponentEndOverlap.AddDynamic(this, &ACameraLimitVolume::OnCameraLimitEndOverlap);
 
 		TriggerOverlapEvents();
+	}
+
+	if (Checkpoint == nullptr)
+	{
+		for (TActorIterator<ATWACheckpoint> checkpointIt(GetWorld()); checkpointIt; ++checkpointIt)
+		{
+			if (ATWACheckpoint* checkpoint = (*checkpointIt))
+			{
+				if (EncompassesPoint(checkpoint->GetActorLocation(), 100.0f))
+				{
+					Checkpoint = checkpoint;
+					break;
+				}
+			}
+		}
 	}
 }
 
