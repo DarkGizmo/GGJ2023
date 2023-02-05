@@ -36,4 +36,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Fire", meta = (DefaultToSelf = "selfObject"))
 	static bool DefaultIsFlaming(UObject* selfObject);
+
+	UFUNCTION(BlueprintPure)
+	static FBoxSphereBounds GetVolumeBounds(AVolume* volume);
 };

@@ -4,6 +4,7 @@
 #include "TWAUtilities.h"
 #include "Windable.h"
 #include "Flammable.h"
+#include "GameFramework/Volume.h"
 
 class ATWAPawn* UTWABlueprintLibrary::GetLocalPawn()
 {
@@ -57,4 +58,9 @@ void UTWABlueprintLibrary::SimplePhysicsWind(UObject* selfObject, const FVector&
 bool UTWABlueprintLibrary::DefaultIsFlaming(UObject* selfObject)
 {
 	return UFlammable::DefaultIsFlaming(selfObject);
+}
+
+FBoxSphereBounds UTWABlueprintLibrary::GetVolumeBounds(AVolume* volume)
+{
+	return volume->GetBounds();
 }
