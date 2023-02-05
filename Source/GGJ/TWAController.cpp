@@ -25,6 +25,8 @@ void ATWAController::Tick(float deltaTime)
 
 	if(GetWorld() && !GetWorld()->IsPaused())
 	{
+		ATWAGameModeBase* gameMode = Utils::GetGameMode();
+
 		// Regen boost
 		if (WindBoostBurnedOutDuration > 0.0f)
 		{
@@ -66,7 +68,7 @@ void ATWAController::Tick(float deltaTime)
 
 		if(!windForce.IsNearlyZero(0.01f))
 		{
-			if (ATWAGameModeBase* gameMode = Utils::GetGameMode())
+			if (gameMode)
 			{
 				for (UObject* object : gameMode->WindableList)
 				{
@@ -82,6 +84,52 @@ void ATWAController::Tick(float deltaTime)
 		{
 			TWEAKABLE float WindForceDebugDrawMultiplier = 100.0f;
 			DrawDebugDirectionalArrow(GetWorld(), pawn->GetActorLocation() + VecZ(100.0f), pawn->GetActorLocation() + VecZ(100.0f) + windForce * WindForceDebugDrawMultiplier, 25.0f, FColor::Blue);
+		}
+
+		if (gameMode)
+		{
+			FVector eyeLocation;
+			FRotator eyeRotation;
+			Utils::GetPawn()->GetActorEyesViewPoint(eyeLocation, eyeRotation);
+
+			TWEAKABLE float EyeXOffset = 360.0f;
+			TWEAKABLE float EyeXLimit = 2500.0f;
+			TWEAKABLE float EyeYLimit = 4000.0f;
+			eyeLocation += FVector(EyeXOffset, 0.0f, 0.0f);
+
+			for (UObject* object : gameMode->WindClutter)
+			{
+				if (AActor* actor = Cast<AActor>(object))
+				{
+					FVector clutterLocation = actor->GetActorLocation();
+					FVector toClutter = actor->GetActorLocation() - eyeLocation;
+					if (toClutter.X < -EyeXLimit)
+					{
+						FVector newLocation = eyeLocation + FVector::ForwardVector * EyeXLimit;
+						newLocation.Z = clutterLocation.Z;
+						actor->SetActorLocation(newLocation);
+					}
+					else if (toClutter.X > EyeXLimit)
+					{
+						FVector newLocation = eyeLocation - FVector::ForwardVector * EyeXLimit;
+						newLocation.Z = clutterLocation.Z;
+						actor->SetActorLocation(newLocation);
+					}
+
+					if (toClutter.Y < -EyeYLimit)
+					{
+						FVector newLocation = eyeLocation + FVector::RightVector * EyeYLimit;
+						newLocation.Z = clutterLocation.Z;
+						actor->SetActorLocation(newLocation);
+					}
+					else if (toClutter.Y > EyeYLimit)
+					{
+						FVector newLocation = eyeLocation - FVector::RightVector * EyeYLimit;
+						newLocation.Z = clutterLocation.Z;
+						actor->SetActorLocation(newLocation);
+					}
+				}
+			}
 		}
 	}
 }

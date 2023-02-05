@@ -26,4 +26,7 @@ public:
 
 	UPROPERTY(transient)
 	TArray<UObject*> ResetableList;
+
+	UPROPERTY(transient)
+	TArray<UObject*> WindClutter;
 };
