@@ -15,6 +15,12 @@ class GGJ_API ATWAGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> TumbleweedActorClass;
+
+	//////////////////////////////////////////////////////////////////////////
+	// Dynamic
 	UPROPERTY(transient)
 	TArray<UObject*> WindableList;
 };

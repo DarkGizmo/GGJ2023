@@ -7,6 +7,7 @@
 #include "TWAUtilities.h"
 #include "TWAController.h"
 #include "CameraLimitVolume.h"
+#include "TWACheckpoint.h"
 
 void ATWAPawn::BeginPlay()
 {
@@ -29,6 +30,44 @@ void ATWAPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ATWAPawn::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
+
+	for (int i = ViewTargets.Num() - 1; i >= 0; --i)
+	{
+		if (ViewTargets[i] == nullptr || ViewTargets[i]->IsPendingKill())
+		{
+			ViewTargets.RemoveAtSwap(i);
+		}
+	}
+
+	if (ViewTargets.IsEmpty())
+	{
+		if(PlayerDeadTimestamp <= 0.0f)
+		{
+			OnPlayerDead();
+			PlayerDeadTimestamp = Utils::GetGameTime();
+		}
+		else 
+		{
+			if (!Utils::IsRecentEvent(PlayerDeadTimestamp, DeadFadeOutDelay) && !bTriggeredFadeOut)
+			{
+				bTriggeredFadeOut = true;
+				OnDeathFadeOut();
+			}
+
+			if (!Utils::IsRecentEvent(PlayerDeadTimestamp, RespawnDelay))
+			{
+				if (LevelCameraLimit != nullptr && LevelCameraLimit->Checkpoint != nullptr)
+				{
+					LevelCameraLimit->bExited = false;
+					LevelCameraLimit->Checkpoint->Respawn();
+					PlayerDeadTimestamp = -1.0f;
+					bTriggeredFadeOut = false;
+					SetActorLocation(GetTargetViewLocation(), false);
+					OnPlayerRespawn();
+				}
+			}
+		}
+	}
 
 	FVector viewLocation = Utils::Approach(GetActorLocation(), GetTargetViewLocation(), CameraTargetLocationApproach, deltaTime);
 
@@ -128,5 +167,10 @@ void ATWAPawn::RecomputeViewTargets()
 		SetActorLocation(GetTargetViewLocation(), false);
 
 		bEverHadTargets = true;
+	}
+
+	if (CameraLimits.Num() > 0)
+	{
+		LevelCameraLimit = CameraLimits[CameraLimits.Num() - 1];
 	}
 }
