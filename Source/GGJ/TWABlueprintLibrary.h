@@ -42,4 +42,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	static FBoxSphereBounds GetVolumeBounds(AVolume* volume);
+
+	UFUNCTION(BlueprintPure)
+	static float GetWindAngle();
 };
