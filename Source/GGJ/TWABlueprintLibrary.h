@@ -51,4 +51,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	static float GetWindAngle();
+
+	UFUNCTION(BlueprintPure)
+	static FVector2D GetWindInput();
 };
