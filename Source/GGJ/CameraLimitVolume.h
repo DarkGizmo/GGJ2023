@@ -23,6 +23,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<AActor*> LevelBlockingActors;
 
+	UPROPERTY(EditAnywhere)
+	class ATWACheckpoint* Checkpoint;
+
 	virtual void BeginPlay() override;
 	virtual void EndPlay(EEndPlayReason::Type endPlayReason) override;
 

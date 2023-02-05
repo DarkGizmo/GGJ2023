@@ -17,8 +17,17 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	float CameraTargetLocationApproach = 0.9f;
 
+	UPROPERTY(EditDefaultsOnly)
+	float RespawnDelay = 5.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DeadFadeOutDelay = 3.0f;
+
 	UPROPERTY(Transient)
 	TArray<AActor*> ViewTargets;
+
+	UPROPERTY(Transient)
+	class ACameraLimitVolume* LevelCameraLimit;
 
 	UPROPERTY(Transient)
 	TArray<class ACameraLimitVolume*> CameraLimits;
@@ -34,6 +43,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RecomputeViewTargets();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDeathFadeOut();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPlayerDead();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPlayerRespawn();
+
 	bool bEverHadTargets = false;
+	float PlayerDeadTimestamp = 0.0f;
+	bool bTriggeredFadeOut = false;
 
 };

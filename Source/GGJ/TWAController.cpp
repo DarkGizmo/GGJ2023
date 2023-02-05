@@ -69,7 +69,10 @@ void ATWAController::Tick(float deltaTime)
 			{
 				for (UObject* object : gameMode->WindableList)
 				{
-					IWindable::Execute_Wind(object, windForce);
+					if(object != nullptr)
+					{
+						IWindable::Execute_Wind(object, windForce);
+					}
 				}
 			}
 		}
