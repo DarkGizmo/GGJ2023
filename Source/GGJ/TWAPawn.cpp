@@ -61,7 +61,7 @@ void ATWAPawn::Tick(float deltaTime)
 				if (!Utils::IsRecentEvent(PlayerDeadTimestamp, RespawnDelay))
 				{
 					if (LevelCameraLimit != nullptr && LevelCameraLimit->Checkpoint != nullptr)
-					{
+					{ 
 						LevelCameraLimit->bExited = false;
 						LevelCameraLimit->Checkpoint->Respawn();
 						PlayerDeadTimestamp = -1.0f;

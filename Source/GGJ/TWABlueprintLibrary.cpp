@@ -84,3 +84,13 @@ FBoxSphereBounds UTWABlueprintLibrary::GetVolumeBounds(AVolume* volume)
 {
 	return volume->GetBounds();
 }
+
+float UTWABlueprintLibrary::GetWindAngle()
+{
+	if (ATWAController* controller = Utils::GetPlayerController())
+	{
+		return controller->WindAngle;
+	}
+
+	return 0.0f;
+}
