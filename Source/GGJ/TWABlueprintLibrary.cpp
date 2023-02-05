@@ -83,3 +83,13 @@ float UTWABlueprintLibrary::GetWindAngle()
 
 	return 0.0f;
 }
+
+FVector2D UTWABlueprintLibrary::GetWindInput()
+{
+	if (ATWAController* controller = Utils::GetPlayerController())
+	{
+		return controller->WindInput2D;
+	}
+
+	return FVector2D();
+}
