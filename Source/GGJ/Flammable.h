@@ -23,11 +23,14 @@ public:
 class GGJ_API IFlammable
 {
 	GENERATED_BODY()
-
+	
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void CatchFire();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Extinguish();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	bool IsFlaming() const;
