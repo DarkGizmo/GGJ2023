@@ -8,6 +8,8 @@
 #include "TWAController.h"
 #include "CameraLimitVolume.h"
 #include "TWACheckpoint.h"
+#include "Resetable.h"
+#include "TWAGameModeBase.h"
 
 void ATWAPawn::BeginPlay()
 {
@@ -59,13 +61,24 @@ void ATWAPawn::Tick(float deltaTime)
 				if (!Utils::IsRecentEvent(PlayerDeadTimestamp, RespawnDelay))
 				{
 					if (LevelCameraLimit != nullptr && LevelCameraLimit->Checkpoint != nullptr)
-					{
+					{ 
 						LevelCameraLimit->bExited = false;
 						LevelCameraLimit->Checkpoint->Respawn();
 						PlayerDeadTimestamp = -1.0f;
 						bTriggeredFadeOut = false;
 						SetActorLocation(GetTargetViewLocation(), false);
 						OnPlayerRespawn();
+
+						if (ATWAGameModeBase* gameMode = Utils::GetGameMode())
+						{
+							for (UObject* object : gameMode->ResetableList)
+							{
+								if (IsValid(object))
+								{
+									IResetable::Execute_Reset(object);
+								}
+							}
+						}
 					}
 				}
 			}

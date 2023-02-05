@@ -23,4 +23,7 @@ public:
 	// Dynamic
 	UPROPERTY(transient)
 	TArray<UObject*> WindableList;
+
+	UPROPERTY(transient)
+	TArray<UObject*> ResetableList;
 };

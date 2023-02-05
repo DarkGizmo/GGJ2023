@@ -6,6 +6,7 @@
 #include "Flammable.h"
 #include "GameFramework/Volume.h"
 #include "TWAPawn.h"
+#include "Resetable.h"
 
 class ATWAPawn* UTWABlueprintLibrary::GetLocalPawn()
 {
@@ -64,6 +65,16 @@ void UTWABlueprintLibrary::SimplePhysicsWind(UObject* selfObject, const FVector&
 	UWindable::SimplePhysicsWind(selfObject, windForce, clampForce);
 }
 
+void UTWABlueprintLibrary::RegisterResetable(UObject* selfObject)
+{
+	UResetable::RegisterResetable(selfObject);
+}
+
+void UTWABlueprintLibrary::UnregisterResetable(UObject* selfObject)
+{
+	UResetable::UnregisterResetable(selfObject);
+}
+
 bool UTWABlueprintLibrary::DefaultIsFlaming(UObject* selfObject)
 {
 	return UFlammable::DefaultIsFlaming(selfObject);
@@ -72,4 +83,14 @@ bool UTWABlueprintLibrary::DefaultIsFlaming(UObject* selfObject)
 FBoxSphereBounds UTWABlueprintLibrary::GetVolumeBounds(AVolume* volume)
 {
 	return volume->GetBounds();
+}
+
+float UTWABlueprintLibrary::GetWindAngle()
+{
+	if (ATWAController* controller = Utils::GetPlayerController())
+	{
+		return controller->WindAngle;
+	}
+
+	return 0.0f;
 }

@@ -37,9 +37,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Windable", meta = (DefaultToSelf = "selfObject"))
 	static void SimplePhysicsWind(UObject* selfObject, const FVector& windForce, float clampForce = -1.0f);
 
+	UFUNCTION(BlueprintCallable, Category = "Resetable", meta = (DefaultToSelf = "selfObject"))
+	static void RegisterResetable(UObject* selfObject);
+
+	UFUNCTION(BlueprintCallable, Category = "Resetable", meta = (DefaultToSelf = "selfObject"))
+	static void UnregisterResetable(UObject* selfObject);
+
 	UFUNCTION(BlueprintCallable, Category = "Fire", meta = (DefaultToSelf = "selfObject"))
 	static bool DefaultIsFlaming(UObject* selfObject);
 
 	UFUNCTION(BlueprintPure)
 	static FBoxSphereBounds GetVolumeBounds(AVolume* volume);
+
+	UFUNCTION(BlueprintPure)
+	static float GetWindAngle();
 };
