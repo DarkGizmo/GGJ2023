@@ -25,6 +25,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	static float GetBoostCooldownPercentage();
 	
+	UFUNCTION(BlueprintCallable)
+	static void StartGame();
+
 	UFUNCTION(BlueprintCallable, Category = "Windable", meta=(DefaultToSelf = "selfObject"))
 	static void RegisterWindable(UObject* selfObject);
 

@@ -5,6 +5,7 @@
 #include "Windable.h"
 #include "Flammable.h"
 #include "GameFramework/Volume.h"
+#include "TWAPawn.h"
 
 class ATWAPawn* UTWABlueprintLibrary::GetLocalPawn()
 {
@@ -38,6 +39,14 @@ float UTWABlueprintLibrary::GetBoostCooldownPercentage()
 	}
 
 	return 0.0f;
+}
+
+void UTWABlueprintLibrary::StartGame()
+{
+	if (ATWAPawn* player = Utils::GetPawn())
+	{
+		player->StartGame();
+	}
 }
 
 void UTWABlueprintLibrary::RegisterWindable(UObject* self)
