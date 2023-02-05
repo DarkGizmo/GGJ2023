@@ -1,6 +1,12 @@
 #include "TWABlueprintLibrary.h"
 
+#include "TWAUtilities.h"
 #include "Windable.h"
+
+class ATWAPawn* UTWABlueprintLibrary::GetLocalPawn()
+{
+	return Utils::GetPawn();
+}
 
 void UTWABlueprintLibrary::RegisterWindable(UObject* self)
 {

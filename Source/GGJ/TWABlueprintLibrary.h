@@ -13,6 +13,9 @@ class GGJ_API UTWABlueprintLibrary : public UBlueprintFunctionLibrary
 
 public:
 
+	UFUNCTION(BlueprintCallable)
+	static class ATWAPawn* GetLocalPawn();
+
 	UFUNCTION(BlueprintCallable, Category = "Windable", meta=(DefaultToSelf = "selfObject"))
 	static void RegisterWindable(UObject* selfObject);
 
