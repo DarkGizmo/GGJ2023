@@ -31,47 +31,74 @@ void ATWAPawn::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
 
-	for (int i = ViewTargets.Num() - 1; i >= 0; --i)
+	if (bGameStarted)
 	{
-		if (ViewTargets[i] == nullptr || ViewTargets[i]->IsPendingKill())
+		for (int i = ViewTargets.Num() - 1; i >= 0; --i)
 		{
-			ViewTargets.RemoveAtSwap(i);
-		}
-	}
-
-	if (ViewTargets.IsEmpty())
-	{
-		if(PlayerDeadTimestamp <= 0.0f)
-		{
-			OnPlayerDead();
-			PlayerDeadTimestamp = Utils::GetGameTime();
-		}
-		else 
-		{
-			if (!Utils::IsRecentEvent(PlayerDeadTimestamp, DeadFadeOutDelay) && !bTriggeredFadeOut)
+			if (ViewTargets[i] == nullptr || !IsValid(ViewTargets[i]))
 			{
-				bTriggeredFadeOut = true;
-				OnDeathFadeOut();
+				ViewTargets.RemoveAtSwap(i);
 			}
+		}
 
-			if (!Utils::IsRecentEvent(PlayerDeadTimestamp, RespawnDelay))
+		if (ViewTargets.IsEmpty())
+		{
+			if(PlayerDeadTimestamp <= 0.0f)
 			{
-				if (LevelCameraLimit != nullptr && LevelCameraLimit->Checkpoint != nullptr)
+				OnPlayerDead();
+				PlayerDeadTimestamp = Utils::GetGameTime();
+			}
+			else 
+			{
+				if (!Utils::IsRecentEvent(PlayerDeadTimestamp, DeadFadeOutDelay) && !bTriggeredFadeOut)
 				{
-					LevelCameraLimit->bExited = false;
-					LevelCameraLimit->Checkpoint->Respawn();
-					PlayerDeadTimestamp = -1.0f;
-					bTriggeredFadeOut = false;
-					SetActorLocation(GetTargetViewLocation(), false);
-					OnPlayerRespawn();
+					bTriggeredFadeOut = true;
+					OnDeathFadeOut();
+				}
+
+				if (!Utils::IsRecentEvent(PlayerDeadTimestamp, RespawnDelay))
+				{
+					if (LevelCameraLimit != nullptr && LevelCameraLimit->Checkpoint != nullptr)
+					{
+						LevelCameraLimit->bExited = false;
+						LevelCameraLimit->Checkpoint->Respawn();
+						PlayerDeadTimestamp = -1.0f;
+						bTriggeredFadeOut = false;
+						SetActorLocation(GetTargetViewLocation(), false);
+						OnPlayerRespawn();
+					}
 				}
 			}
 		}
+
+		FVector viewLocation = Utils::Approach(GetActorLocation(), GetTargetViewLocation(), CameraTargetLocationApproach, deltaTime);
+
+		SetActorLocation(viewLocation, false);
+	}
+}
+
+void ATWAPawn::StartGame()
+{ 
+	bGameStarted = true;
+
+	for (TActorIterator<ACameraLimitVolume> cameraLimitVolume(GetWorld()); cameraLimitVolume; ++cameraLimitVolume)
+	{
+		if (ACameraLimitVolume* cameraLimit = (*cameraLimitVolume))
+		{
+			if (cameraLimit->EncompassesPoint(GetActorLocation(), 100.0f))
+			{
+				LevelCameraLimit = cameraLimit;
+				break;
+			}
+		}
 	}
 
-	FVector viewLocation = Utils::Approach(GetActorLocation(), GetTargetViewLocation(), CameraTargetLocationApproach, deltaTime);
-
-	SetActorLocation(viewLocation, false);
+	if(LevelCameraLimit != nullptr)
+	{
+		LevelCameraLimit->Checkpoint->Respawn();
+		RecomputeViewTargets();
+	}
+	SetActorLocation(GetTargetViewLocation(), false);
 }
 
 FVector ATWAPawn::GetTargetViewLocation() const

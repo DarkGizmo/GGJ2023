@@ -37,6 +37,8 @@ public:
 
 	virtual void Tick(float deltaTime) override;
 
+	void StartGame();
+
 	FVector GetTargetViewLocation() const;
 
 
@@ -52,6 +54,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPlayerRespawn();
 
+	bool bGameStarted = false;
 	bool bEverHadTargets = false;
 	float PlayerDeadTimestamp = 0.0f;
 	bool bTriggeredFadeOut = false;
