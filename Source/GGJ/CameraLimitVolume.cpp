@@ -15,6 +15,7 @@ void ACameraLimitVolume::BeginPlay()
 
 	if (UBrushComponent* brushComp = GetBrushComponent())
 	{
+		brushComp->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore); // Ignore TWADynamic
 		brushComp->OnComponentBeginOverlap.AddDynamic(this, &ACameraLimitVolume::OnCameraLimitBeginOverlap);
 		brushComp->OnComponentEndOverlap.AddDynamic(this, &ACameraLimitVolume::OnCameraLimitEndOverlap);
 

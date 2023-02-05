@@ -25,6 +25,14 @@ void ATWAController::Tick(float deltaTime)
 
 	if(GetWorld() && !GetWorld()->IsPaused())
 	{
+		TWEAKABLE FVector2D ForcedWindInput = FVector2D(0.0f, 0.0f);
+
+		if (!ForcedWindInput.IsNearlyZero())
+		{
+			WindInput2D = ForcedWindInput;
+		}
+
+
 		ATWAGameModeBase* gameMode = Utils::GetGameMode();
 
 		// Regen boost
@@ -83,50 +91,69 @@ void ATWAController::Tick(float deltaTime)
 		if (ATWAPawn* pawn = Cast<ATWAPawn>(GetPawn()))
 		{
 			TWEAKABLE float WindForceDebugDrawMultiplier = 100.0f;
-			DrawDebugDirectionalArrow(GetWorld(), pawn->GetActorLocation() + VecZ(100.0f), pawn->GetActorLocation() + VecZ(100.0f) + windForce * WindForceDebugDrawMultiplier, 25.0f, FColor::Blue);
+			//DrawDebugDirectionalArrow(GetWorld(), pawn->GetActorLocation() + VecZ(100.0f), pawn->GetActorLocation() + VecZ(100.0f) + windForce * WindForceDebugDrawMultiplier, 25.0f, FColor::Blue);
 		}
 
 		if (gameMode)
 		{
-			FVector eyeLocation;
-			FRotator eyeRotation;
-			Utils::GetPawn()->GetActorEyesViewPoint(eyeLocation, eyeRotation);
-
-			TWEAKABLE float EyeXOffset = 360.0f;
-			TWEAKABLE float EyeXLimit = 2500.0f;
-			TWEAKABLE float EyeYLimit = 4000.0f;
-			eyeLocation += FVector(EyeXOffset, 0.0f, 0.0f);
+			FBox clutterLimitBox = GetWindClutterLimits();
+			FVector clutterLimitBoxCenter = clutterLimitBox.GetCenter();
+			FVector clutterLimitBoxExtent = clutterLimitBox.GetExtent();
 
 			for (UObject* object : gameMode->WindClutter)
 			{
 				if (AActor* actor = Cast<AActor>(object))
 				{
-					FVector clutterLocation = actor->GetActorLocation();
-					FVector toClutter = actor->GetActorLocation() - eyeLocation;
-					if (toClutter.X < -EyeXLimit)
+					if (UPrimitiveComponent* primComp = Cast<UPrimitiveComponent>(actor->GetRootComponent()))
 					{
-						FVector newLocation = eyeLocation + FVector::ForwardVector * EyeXLimit;
-						newLocation.Z = clutterLocation.Z;
-						actor->SetActorLocation(newLocation);
-					}
-					else if (toClutter.X > EyeXLimit)
-					{
-						FVector newLocation = eyeLocation - FVector::ForwardVector * EyeXLimit;
-						newLocation.Z = clutterLocation.Z;
-						actor->SetActorLocation(newLocation);
+						FVector velocity = primComp->GetComponentVelocity();
+						
+						TWEAKABLE float MaxVelocity = 2550.0f;
+						if (velocity.SizeSquared() > MaxVelocity * MaxVelocity)
+						{
+							primComp->SetPhysicsLinearVelocity(velocity.GetSafeNormal() * MaxVelocity);
+						}
 					}
 
-					if (toClutter.Y < -EyeYLimit)
-					{
-						FVector newLocation = eyeLocation + FVector::RightVector * EyeYLimit;
-						newLocation.Z = clutterLocation.Z;
-						actor->SetActorLocation(newLocation);
+					bool bClampToGround = false;
+					FVector newLocation = actor->GetActorLocation();
+					if(!clutterLimitBox.IsInsideOrOn(newLocation))
+					{	
+						FVector toClutter = newLocation - clutterLimitBoxCenter;
+
+						if (toClutter.X < -clutterLimitBoxExtent.X)
+						{
+							newLocation.X = clutterLimitBoxCenter.X + clutterLimitBoxExtent.X;
+							newLocation.Z = clutterLimitBoxCenter.Z + clutterLimitBoxExtent.Z;
+							bClampToGround = true;
+						}
+						else if (toClutter.X > clutterLimitBoxExtent.X)
+						{
+							newLocation.X = clutterLimitBoxCenter.X - clutterLimitBoxExtent.X;
+							newLocation.Z = clutterLimitBoxCenter.Z + clutterLimitBoxExtent.Z;
+							bClampToGround = true;
+						}
+
+						if (toClutter.Y < -clutterLimitBoxExtent.Y)
+						{
+							newLocation.Y = clutterLimitBoxCenter.Y + clutterLimitBoxExtent.Y;
+							newLocation.Z = clutterLimitBoxCenter.Z + clutterLimitBoxExtent.Z;
+							bClampToGround = true;
+						}
+						else if (toClutter.Y > clutterLimitBoxExtent.Y)
+						{
+							newLocation.Y = clutterLimitBoxCenter.Y - clutterLimitBoxExtent.Y;
+							newLocation.Z = clutterLimitBoxCenter.Z + clutterLimitBoxExtent.Z;
+							bClampToGround = true;
+						}
+
+						newLocation.Z = FMath::Clamp(newLocation.Z, clutterLimitBoxCenter.Z - clutterLimitBoxExtent.Z, clutterLimitBoxCenter.Z + clutterLimitBoxExtent.Z);
 					}
-					else if (toClutter.Y > EyeYLimit)
+
+					actor->SetActorLocation(newLocation);
+					if (bClampToGround)
 					{
-						FVector newLocation = eyeLocation - FVector::RightVector * EyeYLimit;
-						newLocation.Z = clutterLocation.Z;
-						actor->SetActorLocation(newLocation);
+						actor->SetActorLocation(Vec2D(newLocation) + VecZ(clutterLimitBoxCenter.Z - clutterLimitBoxExtent.Z), true);
 					}
 				}
 			}
@@ -161,5 +188,53 @@ void ATWAController::BoostWindReleased()
 		bWindWantsBoost = false;
 		WindBoostBurnedOutDuration = FMath::Max(MapClamped(Utils::ElapsedTime(WindBoostStartedTime), 0.0f, BoostCurveMultiplier->FloatCurve.GetLastKey().Time, 0.0f, BoostRegenDuration), MinimumReboostInterval);
 		OnBoostEnded.Broadcast(MapClamped(Utils::ElapsedTime(WindBoostStartedTime), 0.0f, BoostCurveMultiplier->FloatCurve.GetLastKey().Time, 0.0f, BoostRegenDuration));
+	}
+}
+
+FBox ATWAController::GetWindClutterLimits() const
+{
+	TWEAKABLE float EyeXOffset = 1900.0f;
+	TWEAKABLE float EyeZOffset = -100;
+	TWEAKABLE float EyeXLimit = 2500.0f;
+	TWEAKABLE float EyeYLimit = 4000.0f;
+	TWEAKABLE float EyeZMinLimit = -200.0f;
+	TWEAKABLE float EyeZMaxLimit = 350.0f;
+
+
+	FVector eyeLocation;
+	FRotator eyeRotation;
+	Utils::GetPawn()->GetActorEyesViewPoint(eyeLocation, eyeRotation);
+
+	eyeLocation += eyeRotation.RotateVector(FVector(EyeXOffset, 0.0f, EyeZOffset));
+
+	FBox box = FBox(eyeLocation - FVector(EyeXLimit, EyeYLimit, -EyeZMinLimit), eyeLocation + FVector(EyeXLimit, EyeYLimit, EyeZMaxLimit));
+
+	//DrawDebugBox(GetWorld(), box.GetCenter(), box.GetExtent(), FColor::Blue, false, 0.1f);
+
+	return box;
+}
+
+void ATWAController::SnapClutterToGround()
+{
+	FBox clutterLimitBox = GetWindClutterLimits();
+	FVector clutterLimitBoxCenter = clutterLimitBox.GetCenter();
+	FVector clutterLimitBoxExtent = clutterLimitBox.GetExtent();
+
+	if(ATWAGameModeBase* gameMode = Utils::GetGameMode())
+	{
+		for (UObject* object : gameMode->WindClutter)
+		{
+			if (AActor* actor = Cast<AActor>(object))
+			{
+				FVector actorLocation = actor->GetActorLocation();
+				actor->SetActorLocation(Vec2D(actorLocation) + VecZ(clutterLimitBoxCenter.Z - clutterLimitBoxExtent.Z), true);
+
+				if (UPrimitiveComponent* primComp = Cast<UPrimitiveComponent>(actor->GetRootComponent()))
+				{
+					primComp->SetPhysicsLinearVelocity(FVector::ZeroVector);
+					primComp->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+				}
+			}
+		}
 	}
 }
