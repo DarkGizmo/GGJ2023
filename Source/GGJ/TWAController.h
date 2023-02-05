@@ -5,6 +5,9 @@
 
 #include "TWAController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBoostStarted);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBoostEnded);
+
 /**
  * 
  */
@@ -35,6 +38,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Boost")
 	float BoostRegenDuration = 5.0f;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnBoostStarted OnBoostStarted;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnBoostEnded OnBoostEnded;
+	
 	void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent);
 
 	virtual void Tick(float deltaTime) override;

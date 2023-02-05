@@ -16,6 +16,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	static class ATWAPawn* GetLocalPawn();
 
+	UFUNCTION(BlueprintCallable)
+	static class ATWAController* GetLocalController();
+
+	UFUNCTION(BlueprintCallable)
+	static float GetRemainingBoostPercentage();
+
+	UFUNCTION(BlueprintCallable)
+	static float GetBoostCooldownPercentage();
+	
 	UFUNCTION(BlueprintCallable, Category = "Windable", meta=(DefaultToSelf = "selfObject"))
 	static void RegisterWindable(UObject* selfObject);
 
