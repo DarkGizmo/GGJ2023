@@ -22,6 +22,10 @@ class GGJ_API IFlammable
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	UFUNCTION(BluePrintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void CatchFire();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool IsOnFire();
+	
 };
