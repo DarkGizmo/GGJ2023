@@ -147,7 +147,8 @@ void ACameraLimitVolume::OnCameraLimitEndOverlap(UPrimitiveComponent* overlapped
 				SetIgnoreActorWhenMoving(viewTarget, false);
 			}
 		}
+
+		bExited = true;
 	}
 
-	bExited = true;
 }
