@@ -15,20 +15,23 @@ class GGJ_API UFireComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UFireComponent();
-
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPrimitiveComponent* componentUsedForOverlap;
 protected:
 	
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
+public:
 	
-public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION()
         void OnFireComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION(BlueprintCallable)
-	void DelegateComponentHit(UPrimitiveComponent* componentUsedForOverlap);
+	void DelegateComponentHit(UPrimitiveComponent* componentForOverlap);
 	
         
 		

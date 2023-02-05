@@ -150,6 +150,7 @@ FVector ATWAPawn::GetTargetViewLocation() const
 	}
 
 	FVector viewLocation = GetActorLocation();
+	float z = viewLocation.Z;
 
 	if (targetCount > 0)
 	{
@@ -165,6 +166,8 @@ FVector ATWAPawn::GetTargetViewLocation() const
 
 		viewLocation = targetViewLocation;
 	}
+
+	viewLocation.Z = z;
 
 	return viewLocation;
 }
