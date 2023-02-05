@@ -52,6 +52,7 @@ SourceArt/**/*.tga
 
 # Builds
 Build/*
+PackagedBuild/*
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !Build/*/
