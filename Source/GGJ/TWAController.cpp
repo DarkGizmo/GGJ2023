@@ -98,6 +98,7 @@ void ATWAController::BoostWindPressed()
 	{
 		bWindWantsBoost = true;
 		WindBoostStartedTime = Utils::GetGameTime();
+		OnBoostStarted.Broadcast();
 	}
 }
 
@@ -108,6 +109,7 @@ void ATWAController::BoostWindReleased()
 		bWindWantsBoost = false;
 		float windBoostElapsedTime = FMath::Max(Utils::ElapsedTime(WindBoostStartedTime), MinimumReboostInterval);
 		WindBoostBurnedOutDuration = MapClamped(windBoostElapsedTime, 0.0f, BoostCurveMultiplier->FloatCurve.GetLastKey().Time, 0.0f, BoostRegenDuration);
+		OnBoostEnded.Broadcast();
 	}
 	
 }
