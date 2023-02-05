@@ -53,6 +53,7 @@ SourceArt/**/*.tga
 # Builds
 Build/*
 PackagedBuild/*
+GGJ-Win64-Shipping.*
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !Build/*/
