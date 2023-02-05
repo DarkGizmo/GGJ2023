@@ -25,6 +25,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	static float GetBoostCooldownPercentage();
 	
+	UFUNCTION(BlueprintCallable)
+	static void StartGame();
+
 	UFUNCTION(BlueprintCallable, Category = "Windable", meta=(DefaultToSelf = "selfObject"))
 	static void RegisterWindable(UObject* selfObject);
 
@@ -36,4 +39,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Fire", meta = (DefaultToSelf = "selfObject"))
 	static bool DefaultIsFlaming(UObject* selfObject);
+
+	UFUNCTION(BlueprintPure)
+	static FBoxSphereBounds GetVolumeBounds(AVolume* volume);
 };
