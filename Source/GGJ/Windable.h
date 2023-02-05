@@ -34,4 +34,11 @@ public:
 	{
 		// Maybe implemented
 	}
+
+	UFUNCTION(BlueprintNativeEvent)
+	FVector2D GetZLimit() const;
+	virtual FVector2D GetZLimit_Implementation() const
+	{
+		return FVector2D(-1.0f, -1.0f);
+	}
 };

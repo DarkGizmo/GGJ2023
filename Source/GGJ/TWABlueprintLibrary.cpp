@@ -6,6 +6,7 @@
 #include "Flammable.h"
 #include "GameFramework/Volume.h"
 #include "TWAPawn.h"
+#include "Resetable.h"
 
 class ATWAPawn* UTWABlueprintLibrary::GetLocalPawn()
 {
@@ -62,6 +63,16 @@ void UTWABlueprintLibrary::UnregisterWindable(UObject* self)
 void UTWABlueprintLibrary::SimplePhysicsWind(UObject* selfObject, const FVector& windForce, float clampForce)
 {
 	UWindable::SimplePhysicsWind(selfObject, windForce, clampForce);
+}
+
+void UTWABlueprintLibrary::RegisterResetable(UObject* selfObject)
+{
+	UResetable::RegisterResetable(selfObject);
+}
+
+void UTWABlueprintLibrary::UnregisterResetable(UObject* selfObject)
+{
+	UResetable::UnregisterResetable(selfObject);
 }
 
 bool UTWABlueprintLibrary::DefaultIsFlaming(UObject* selfObject)

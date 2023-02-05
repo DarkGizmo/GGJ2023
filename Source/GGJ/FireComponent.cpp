@@ -2,6 +2,7 @@
 
 
 #include "FireComponent.h"
+#include "Flammable.h"
 
 // Sets default values for this component's properties
 UFireComponent::UFireComponent()
@@ -12,7 +13,6 @@ UFireComponent::UFireComponent()
 
 	// ...
 }
-
 
 // Called when the game starts
 void UFireComponent::BeginPlay()
@@ -32,3 +32,17 @@ void UFireComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	// ...
 }
 
+void UFireComponent::OnFireComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{  
+  
+  if (OtherActor->GetClass()->ImplementsInterface(UFlammable::StaticClass()) &&
+      ! IFlammable::Execute_IsFlaming(OtherActor))
+  {
+    IFlammable::Execute_CatchFire(OtherActor);
+  }
+}
+
+void UFireComponent::DelegateComponentHit(UPrimitiveComponent* componentUsedForOverlap)
+{
+  componentUsedForOverlap->OnComponentHit.AddDynamic(this, &UFireComponent::OnFireComponentHit);
+}

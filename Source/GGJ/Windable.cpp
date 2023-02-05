@@ -20,6 +20,14 @@ void UWindable::RegisterWindable(UObject* windable)
 				(*cameraLimitVolume)->TriggerOverlapEvents();
 			}
 		}
+
+		if (AActor* actor = Cast<AActor>(windable))
+		{
+			if (actor->ActorHasTag("WindClutter"))
+			{
+				gameMode->WindClutter.Add(windable);
+			}
+		}
 		
 	}
 }
@@ -29,6 +37,14 @@ void UWindable::UnregisterWindable(UObject* windable)
 	if (ATWAGameModeBase* gameMode = Utils::GetGameMode())
 	{
 		gameMode->WindableList.Remove(windable);
+
+		if (AActor* actor = Cast<AActor>(windable))
+		{
+			if (actor->ActorHasTag("WindClutter"))
+			{
+				gameMode->WindClutter.Remove(windable);
+			}
+		}
 	}
 }
 
