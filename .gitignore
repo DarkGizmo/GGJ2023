@@ -77,3 +77,4 @@ DerivedDataCache/*
 /Saved/Config/WindowsEditor/*
 /Binaries/Win64/UnrealEditor-GGJ.pdb
 /Binaries/Win64/UnrealEditor-GGJ*.pdb
+*.pdb
