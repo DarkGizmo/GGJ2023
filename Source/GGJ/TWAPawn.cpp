@@ -93,7 +93,7 @@ void ATWAPawn::StartGame()
 		}
 	}
 
-	if(LevelCameraLimit != nullptr)
+	if(LevelCameraLimit != nullptr && LevelCameraLimit->Checkpoint)
 	{
 		LevelCameraLimit->Checkpoint->Respawn();
 		RecomputeViewTargets();
