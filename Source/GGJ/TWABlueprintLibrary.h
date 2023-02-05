@@ -33,4 +33,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Windable", meta = (DefaultToSelf = "selfObject"))
 	static void SimplePhysicsWind(UObject* selfObject, const FVector& windForce, float clampForce = -1.0f);
+
+	UFUNCTION(BlueprintCallable, Category = "Fire", meta = (DefaultToSelf = "selfObject"))
+	static bool DefaultIsFlaming(UObject* selfObject);
 };
