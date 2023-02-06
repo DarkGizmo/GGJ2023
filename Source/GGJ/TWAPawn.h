@@ -53,6 +53,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPlayerRespawn();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnCheckpointReached();
+
 	bool bGameStarted = false;
 	bool bEverHadTargets = false;
 	float PlayerDeadTimestamp = 0.0f;

@@ -10,6 +10,7 @@
 #include "TWACheckpoint.h"
 #include "Resetable.h"
 #include "TWAGameModeBase.h"
+#include "Flammable.h"
 
 void ATWAPawn::BeginPlay()
 {
@@ -188,6 +189,8 @@ void ATWAPawn::RecomputeViewTargets()
 		}
 	}
 
+	bool bIsFlaming = false;
+
 	if (UWorld* World = GEngine->GetWorldFromContextObject(this, EGetWorldErrorMode::LogAndReturnNull))
 	{
 		for (FActorIterator It(World); It; ++It)
@@ -208,6 +211,11 @@ void ATWAPawn::RecomputeViewTargets()
 						{
 							CameraLimits.AddUnique(cameraLimit);
 						}
+
+						if(actor->Implements<UFlammable>())
+						{
+							bIsFlaming = bIsFlaming || IFlammable::Execute_IsFlaming(actor);
+						}
 					}
 				}
 			}
@@ -222,8 +230,12 @@ void ATWAPawn::RecomputeViewTargets()
 		bEverHadTargets = true;
 	}
 
-	if (CameraLimits.Num() > 0)
+	if (CameraLimits.Num() > 0 && !bIsFlaming)
 	{
-		LevelCameraLimit = CameraLimits[CameraLimits.Num() - 1];
+		if(LevelCameraLimit != CameraLimits[CameraLimits.Num() - 1])
+		{
+			LevelCameraLimit = CameraLimits[CameraLimits.Num() - 1];
+			OnCheckpointReached();
+		}
 	}
 }
