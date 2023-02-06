@@ -239,3 +239,8 @@ void ATWAPawn::RecomputeViewTargets()
 		}
 	}
 }
+
+void ATWAPawn::OnFireStateChanged()
+{
+	RecomputeViewTargets();
+}
