@@ -38,9 +38,8 @@ public:
 	virtual void Tick(float deltaTime) override;
 	
 	void StartGame();
-
+	
 	FVector GetTargetViewLocation() const;
-
 
 	UFUNCTION(BlueprintCallable)
 	void RecomputeViewTargets();
