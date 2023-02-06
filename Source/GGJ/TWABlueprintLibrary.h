@@ -54,4 +54,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	static FVector2D GetWindInput();
+
+	UFUNCTION(BlueprintCallable, meta = (DefaultToSelf = "actor"))
+	static void KillVelocity(AActor* actor);
 };
