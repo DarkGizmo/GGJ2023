@@ -104,3 +104,17 @@ FVector2D UTWABlueprintLibrary::GetWindInput()
 
 	return FVector2D();
 }
+
+
+void UTWABlueprintLibrary::KillVelocity(AActor* actor)
+{
+	if(actor != nullptr)
+	{
+		if (UPrimitiveComponent* primComp = Cast<UPrimitiveComponent>(actor->GetRootComponent()))
+		{
+			primComp->SetPhysicsLinearVelocity(FVector::ZeroVector);
+			primComp->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+			primComp->PutRigidBodyToSleep();
+		}
+	}
+}

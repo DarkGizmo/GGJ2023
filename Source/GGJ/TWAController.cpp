@@ -205,11 +205,12 @@ FBox ATWAController::GetWindClutterLimits() const
 	FRotator eyeRotation;
 	Utils::GetPawn()->GetActorEyesViewPoint(eyeLocation, eyeRotation);
 
-	eyeLocation += eyeRotation.RotateVector(FVector(EyeXOffset, 0.0f, EyeZOffset));
+	// WTF?
+	eyeLocation += /*eyeRotation.RotateVector*/(FVector(EyeXOffset, 0.0f, EyeZOffset));
 
 	FBox box = FBox(eyeLocation - FVector(EyeXLimit, EyeYLimit, -EyeZMinLimit), eyeLocation + FVector(EyeXLimit, EyeYLimit, EyeZMaxLimit));
 
-	//DrawDebugBox(GetWorld(), box.GetCenter(), box.GetExtent(), FColor::Blue, false, 0.1f);
+	DrawDebugBox(GetWorld(), box.GetCenter(), box.GetExtent(), FColor::Blue, false, 0.1f);
 
 	return box;
 }
