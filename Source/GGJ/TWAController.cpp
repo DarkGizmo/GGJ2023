@@ -210,7 +210,7 @@ FBox ATWAController::GetWindClutterLimits() const
 
 	FBox box = FBox(eyeLocation - FVector(EyeXLimit, EyeYLimit, -EyeZMinLimit), eyeLocation + FVector(EyeXLimit, EyeYLimit, EyeZMaxLimit));
 
-	DrawDebugBox(GetWorld(), box.GetCenter(), box.GetExtent(), FColor::Blue, false, 0.1f);
+	//DrawDebugBox(GetWorld(), box.GetCenter(), box.GetExtent(), FColor::Blue, false, 0.1f);
 
 	return box;
 }
